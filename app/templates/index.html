@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %} Home {% endblock %}
+
+{% block content %}
+
+{% if current_user.is_authenticated %}
+        <h1 class="text-center">Welcome Back, {{ current_user.username }}!</h1>
+    {% for post in posts %}
+        <div class="card my-3">
+            <img src="" alt="{{ post.img }}">
+            <div class="card-header">
+            Brand: {{ post.brand }}
+            </div>
+            <div class="card-body">
+            <blockquote class="blockquote mb-0">
+                <p>name: {{ post.name }}</p>
+                <p>size: {{ post.size }}</p>
+                <p>price: {{ post.price }}$</p>
+                <footer class="blockquote-footer">{{ post.author.username }} on
+                    <cite title="Source Title">{{ post.date_created.strftime('%A, %B %d at %I:%M%p') }}</cite>
+                </footer>
+            </blockquote>
+            <a href="{{ url_for('api.get_post', post_id=post.id) }}" class="btn btn-primary mt-3">See More</a>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <h1 class="text-center"><em><strong>Get the best deals and offers at prices that fits your budget</strong></em></h1>
+    <div class="container-fluid">
+        <div class="display-flex justify-content-center align-content-center">
+        <a href="/login" class="btn btn-success m-auto">Get Started</a>
+        </div>
+    </div>
+{% endif %}
+
+{% endblock %}
