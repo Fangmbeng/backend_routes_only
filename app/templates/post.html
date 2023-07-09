@@ -7,12 +7,12 @@
     <div class="col">
         <div class="card my-3">
             <!-- <img src="https://picsum.photos/2500/500" class="card-img-top" alt="placeholder image"> -->
-            <img src="" class="card-img-top" alt="{{ post.img }}">
+            <img src="data:image/jpeg;base64,{{ post.get_image_data() }}" class="card-img-top" alt="">
             <div class="card-body">
                 <h5 class="card-title">brand: {{ post.brand }}</h5>
                 <p class="card-text">name: {{ post.name }}</p>
                 <p class="card-text">size: {{ post.size }}</p>
-                <p class="card-text">price: {{ post.price }}$</p>
+                <p class="card-text">price: ${{ post.price }}</p>
                 <p class="card-text"><small class="text-muted">{{ post.author.username }}</small></p>
                 {% if current_user == post.author %}
                     <a href="{{ url_for('api.edit_post', post_id=post.id) }}" class="btn btn-success">Edit Post</a>

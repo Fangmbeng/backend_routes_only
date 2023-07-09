@@ -102,7 +102,7 @@ class Post(db.Model):
     name = db.Column(db.String, nullable=False)
     size = db.Column(db.String, nullable=False)
     price = db.Column(db.Integer, nullable=False)
-    img=db.Column(db.String, nullable=False)
+    img=db.Column(db.String(200), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id')) # SQL Equivalent - FOREIGN KEY(user_id) REFERENCES user(id)
 
@@ -155,7 +155,7 @@ class Chart(db.Model):
     name = db.Column(db.String, nullable=False)
     size = db.Column(db.String, nullable=False)
     price = db.Column(db.Integer, nullable=False)
-    img=db.Column(db.String, nullable=False)
+    img=db.Column(db.String(200), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     
     

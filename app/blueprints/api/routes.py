@@ -20,7 +20,7 @@ def create_post():
         name = form.name.data
         size = form.size.data
         price = form.price.data
-        # Create new post instance which will also add to db
+        #Create new post instance which will also add to db
         new_post = Post(brand=brand, name=name, size=size, price=price, img=image, user_id=current_user.id)
         flash(f"{new_post.brand} has been created", "success")
         return redirect(url_for('site.index'))
@@ -52,7 +52,7 @@ def edit_post(post_id):
     form = PostForm()
     if form.validate_on_submit():
         # Get the form data
-        image = form.imagr.data
+        image = form.image.data
         brand = form.brand.data
         name = form.name.data
         size = form.size.data
