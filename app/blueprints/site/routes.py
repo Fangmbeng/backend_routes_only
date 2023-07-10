@@ -25,7 +25,6 @@ def profile():
         name = form.name.data
         size = form.size.data
         price=form.price.data
-        image = form.image.data
         # Create new post instance which will also add to db
         new_post = Post(brand=brand, name=name, price=price, size=size, img=image, user_id=current_user.id)
         flash(f"{new_post.brand} has been created", "success")

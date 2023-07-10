@@ -15,13 +15,12 @@ def create_post():
     form = PostForm()
     if form.validate_on_submit():
         # Get data from form
-        image = form.image.data
         brand = form.brand.data
         name = form.name.data
         size = form.size.data
         price = form.price.data
         #Create new post instance which will also add to db
-        new_post = Post(brand=brand, name=name, size=size, price=price, img=image, user_id=current_user.id)
+        new_post = Post(brand=brand, name=name, size=size, price=price, user_id=current_user.id)
         flash(f"{new_post.brand} has been created", "success")
         return redirect(url_for('site.index'))
         
@@ -52,13 +51,12 @@ def edit_post(post_id):
     form = PostForm()
     if form.validate_on_submit():
         # Get the form data
-        image = form.image.data
         brand = form.brand.data
         name = form.name.data
         size = form.size.data
         price = form.price.data
         # update the post using the .update method
-        post.update(brand=brand, name=name, size=size, price=price, img=image, user_id=current_user.id)
+        post.update(brand=brand, name=name, size=size, price=price, user_id=current_user.id)
         flash(f"{post.brand} has been updated!", "success")
         return redirect(url_for('api.get_post', post_id=post.id))
     if request.method == 'GET':
@@ -66,7 +64,6 @@ def edit_post(post_id):
         form.name.data = post.name
         form.size.data =post.size
         form.price.data =post.price
-        form.image.data =post.img
     return render_template('edit.html', post=post, form=form)
 
 # DELETE car ENDPOINT
@@ -98,18 +95,10 @@ def index_():
     return {'token':token, 'token_expiration':user.token_expiration}
 
 @api.route('/users')
-@token_auth.login_required
 def get_user():
     user = token_auth.current_user()
     id = user.get_user_id()
     return {'id': id}
-
-@api.route('/avatar')
-@token_auth.login_required
-def getavatar():
-    user = token_auth.current_user()
-    avatar = user.get_avatar()
-    return {'avatar': avatar}
     
 
 @api.route('/users', methods=['POST'])
@@ -132,32 +121,20 @@ def createuser():
     return new_user.to_dict(), 201
     
 @api.route('/user/edit/<int:user_id>', methods=['POST'])
-@token_auth.login_required
 def edit_user(user_id):
     user = User.query.get(user_id)
     if not request.is_json:
         return("your request content-type is not JSON"), 400
     data=request.json
-    for field in ['username'] or ['email'] or ['password'] or ['avatar']:
+    for field in ['username','email', 'password']:
         if field not in data:
             return("error:f{field} must be in request body"), 400
     username = data.get('username')
     password = data.get("password")
     email = data.get("email")
-    avatar = data.get('avatar')
     same_user =  token_auth.current_user()
-    if field == 'username':
-        user.update(username=username, user_id=same_user)
-        return user.to_dict()
-    elif field == 'email':
-        user.update(email=email, user_id=same_user)
-        return user.dict()
-    elif field == 'password':
-        user.update(password=password, user_id=same_user)
-        return user.dict()
-    elif field == 'avatar':
-        user.update(avatar = avatar, user_id=same_user)
-        return user.dict()
+    user.update(username=username, email=email, password=password, user_id=same_user)
+    return user.to_dict()
 
 
 @api.route('/user/delete/<int:user_id>', methods=['POST'])
@@ -189,16 +166,15 @@ def createpost():
     if not request.is_json:
         return("your request content-type is not JSON"), 400
     data=request.json
-    for field in ["brand", "name", 'size', "price", "image"]:
+    for field in ["brand", "name", 'size', "price"]:
         if field not in data:
             return(f"error:{field} must be in request body"), 400
     brand = data.get('brand')
     name=data.get('name')
     size = data.get("size")
     price=data.get('price')
-    img= data.get('image')
     user =  token_auth.current_user()
-    new_post = Post(brand=brand, name=name, price=price, size=size, img=img, user_id=user)
+    new_post = Post(brand=brand, name=name, price=price, size=size, user_id=user)
     return new_post.to_dict(), 201
     
 @api.route('/post/edit/<int:post_id>', methods=['POST'])
@@ -207,30 +183,16 @@ def editpost(post_id):
     if not request.is_json:
         return("your request content-type is not JSON"), 400
     data=request.json
-    for field in ['brand','name', 'size', 'price','image']:
+    for field in ['brand','name', 'size', 'price']:
         if field not in data:
             return("error:f{field} must be in request body"), 400
     brand = data.get('brand')
     name=data.get('name')
     size = data.get("size")
     price=data.get('price')
-    img= data.get('image')
     user =  token_auth.current_user()
-    if field=='brand':
-        post.update(brand=brand, user_id=user)
-        return post.to_dict(), 201
-    elif field=='name':
-        post.update(name=name, user_id=user)
-        return post.to_dict(), 201
-    elif field=='price':
-        post.update(price=price, user_id=user)
-        return post.to_dict(), 201
-    elif field=='size':
-        post.update(size=size, user_id=user)
-        return post.to_dict(), 201
-    elif field=='image':
-        post.update(img=img, user_id=user)
-        return post.to_dict(), 201
+    post.update(brand=brand, name=name, size=size, price=price, user_id=user)
+    return post.to_dict(), 201
 
 
 @api.route('/post/delete/<int:post_id>', methods=['POST'])
@@ -240,7 +202,7 @@ def deletepost(post_id):
     if not request.is_json:
         return("your request content-type is not JSON"), 400
     data=request.json
-    for field in ['brand', 'name', 'size', 'price', 'image']:
+    for field in ['brand', 'name', 'size', 'price']:
         if field not in data:
             return("error:f{field} must be in request body"), 400
     post.delete()
@@ -263,7 +225,7 @@ def delete_item(chart_id):
     if not request.is_json:
         return("your request content-type is not JSON"), 400
     data=request.json
-    for field in ['name', 'size', 'price']:
+    for field in ["brand", 'name', 'size', 'price']:
         if field not in data:
             return("error:f{field} must be in request body"), 400
     chart.delete()
@@ -276,7 +238,7 @@ def empty_chart():
     if not request.is_json:
         return("your request content-type is not JSON"), 400
     data=request.json
-    for field in ['name', 'size', 'price']:
+    for field in ['brand', 'name', 'size', 'price']:
         if field not in data:
             return("error:f{field} must be in request body"), 400
     chart.delete()
@@ -288,12 +250,13 @@ def create_chart():
     if not request.is_json:
         return("your request content-type is not JSON"), 400
     data=request.json
-    for field in ["size", "name", "price"]:
+    for field in ["brand","size", "name", "price"]:
         if field not in data:
             return(f"error:{field} must be in request body"), 400
+    brand=data.get("brand")
     name=data.get('name')
     size = data.get("size")
     price=data.get('price')
     user =  token_auth.current_user()
-    new_chart = Chart(name=name, price=price, size=size, user_id=user)
+    new_chart = Chart(brand=brand, name=name, price=price, size=size, user_id=user)
     return new_chart.to_dict(), 201
