@@ -188,6 +188,7 @@ class Chart(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+
         
     def to_dict(self):
         return{
