@@ -138,7 +138,6 @@ def edit_user(user_id):
 
 
 @api.route('/user/delete/<int:user_id>', methods=['POST'])
-@token_auth.login_required
 def delete_user(user_id):
     user = User.query.get(user_id)
     if not request.is_json:
@@ -161,7 +160,6 @@ def getpost(post_id):
     return posts.to_dict()
 
 @api.route('/posts', methods=['POST'])
-@token_auth.login_required
 def createpost():
     if not request.is_json:
         return("your request content-type is not JSON"), 400
