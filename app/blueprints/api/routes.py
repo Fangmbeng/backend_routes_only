@@ -184,7 +184,6 @@ def getpost(post_id):
     return posts.to_dict()
 
 @api.route('/posts', methods=['POST'])
-@token_auth.login_required
 def createpost():
     if not request.is_json:
         return("your request content-type is not JSON"), 400
@@ -202,7 +201,6 @@ def createpost():
     return new_post.to_dict(), 201
     
 @api.route('/post/edit/<int:post_id>', methods=['POST'])
-@token_auth.login_required
 def editpost(post_id):
     post = Post.query.get(post_id)
     if not request.is_json:
@@ -231,7 +229,6 @@ def editpost(post_id):
 
 
 @api.route('/post/delete/<int:post_id>', methods=['POST'])
-@token_auth.login_required
 def deletepost(post_id):
     post = Post.query.get(post_id)
     if not request.is_json:
@@ -254,7 +251,6 @@ def getitem(chart_id):
     return chart.to_dict()
 
 @api.route('/chart/delete/<int:chart_id>', methods=['POST'])
-@token_auth.login_required
 def delete_item(chart_id):
     chart = Chart.query.get(chart_id)
     if not request.is_json:
@@ -267,7 +263,6 @@ def delete_item(chart_id):
     return chart.to_dict(), 201
 
 @api.route('/chart/empty', methods=['POST'])
-@token_auth.login_required
 def empty_chart():
     chart = Chart.query.all()
     if not request.is_json:
@@ -280,7 +275,6 @@ def empty_chart():
     return chart.to_dict(), 201
 
 @api.route('/chart/create', methods=['POST'])
-@token_auth.login_required
 def create_chart():
     if not request.is_json:
         return("your request content-type is not JSON"), 400
