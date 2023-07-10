@@ -237,7 +237,7 @@ def deletepost(post_id):
     if not request.is_json:
         return("your request content-type is not JSON"), 400
     data=request.json
-    for field in ['brand', 'name', 'size', 'price', 'image':
+    for field in ['brand', 'name', 'size', 'price', 'image']:
         if field not in data:
             return("error:f{field} must be in request body"), 400
     post.delete()
