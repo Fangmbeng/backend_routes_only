@@ -189,14 +189,14 @@ def createpost():
     if not request.is_json:
         return("your request content-type is not JSON"), 400
     data=request.json
-    for field in ["brand", "name", 'size', "price", "img"]:
+    for field in ["brand", "name", 'size', "price", "image"]:
         if field not in data:
             return(f"error:{field} must be in request body"), 400
     brand = data.get('brand')
     name=data.get('name')
     size = data.get("size")
     price=data.get('price')
-    img= data.get('img')
+    img= data.get('image')
     user =  token_auth.current_user()
     new_post = Post(brand=brand, name=name, price=price, size=size, img=img, user_id=user)
     return new_post.to_dict(), 201
@@ -208,14 +208,14 @@ def editpost(post_id):
     if not request.is_json:
         return("your request content-type is not JSON"), 400
     data=request.json
-    for field in ['brand'] or ['name'] or ['size'] or ['prices'] or ['img']:
+    for field in ['brand'] or ['name'] or ['size'] or ['prices'] or ['image']:
         if field not in data:
             return("error:f{field} must be in request body"), 400
     brand = data.get('brand')
     name=data.get('name')
     size = data.get("size")
     price=data.get('price')
-    img= data.get('img')
+    img= data.get('image')
     user =  token_auth.current_user()
     if field=='brand':
         return post.update(brand=brand, user_id=user)
@@ -225,7 +225,7 @@ def editpost(post_id):
         return post.update(price=price, user_id=user)
     if field=='size':
         return post.update(size=size, user_id=user)
-    if field=='img':
+    if field=='image':
         return post.update(img=img, user_id=user)
     return post.to_dict(), 201
 
@@ -237,26 +237,43 @@ def deletepost(post_id):
     if not request.is_json:
         return("your request content-type is not JSON"), 400
     data=request.json
-    for field in ['brand', 'model']:
+    for field in ['brand', 'name', 'size', 'price', 'image':
         if field not in data:
             return("error:f{field} must be in request body"), 400
     post.delete()
     return post.to_dict(), 201
 
+@api.route('/cart', methods=['GET'])
+def getposts():
+    chart = Chart.query.all()
+    return jsonify([c.to_dict() for c in chart])
 
 @api.route('/chart<int:chart_id>', methods=['GET'])
 def getitems(chart_id):
     chart = Chart.query.get(chart_id)
-    return jsonify([c.to_dict() for c in chart])
+    return chart.to_dict()
 
-@api.route('/chart/empty/<int:chart_id>', methods=['POST'])
+@api.route('/chart/delete/<int:chart_id>', methods=['POST'])
 @token_auth.login_required
 def empty_chart(chart_id):
     chart = Chart.query.get(chart_id)
     if not request.is_json:
         return("your request content-type is not JSON"), 400
     data=request.json
-    for field in ['name', 'size', 'price', 'img']:
+    for field in ['name', 'size', 'price']:
+        if field not in data:
+            return("error:f{field} must be in request body"), 400
+    chart.delete()
+    return chart.to_dict(), 201
+
+@api.route('/chart/empty', methods=['POST'])
+@token_auth.login_required
+def empty_chart():
+    chart = Chart.query.all()
+    if not request.is_json:
+        return("your request content-type is not JSON"), 400
+    data=request.json
+    for field in ['name', 'size', 'price']:
         if field not in data:
             return("error:f{field} must be in request body"), 400
     chart.delete()
@@ -268,13 +285,12 @@ def create_chart():
     if not request.is_json:
         return("your request content-type is not JSON"), 400
     data=request.json
-    for field in ["size", "name", "price", 'img']:
+    for field in ["size", "name", "price"]:
         if field not in data:
             return(f"error:{field} must be in request body"), 400
     name=data.get('name')
     size = data.get("size")
     price=data.get('price')
-    img= data.get('img')
     user =  token_auth.current_user()
-    new_chart = Chart(name=name, price=price, size=size, img=img, user_id=user)
+    new_chart = Chart(name=name, price=price, size=size, user_id=user)
     return new_chart.to_dict(), 201
