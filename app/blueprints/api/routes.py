@@ -216,17 +216,16 @@ def editpost(post_id):
     img= data.get('image')
     user =  token_auth.current_user()
     if field=='brand':
-        return post.update(brand=brand, user_id=user)
+        return post.update(brand=brand, user_id=user), post.to_dict(), 201
     if field=='name':
-        return post.update(name=name, user_id=user)
+        return post.update(name=name, user_id=user), post.to_dict(), 201
     if field=='price':
-        return post.update(price=price, user_id=user)
+        return post.update(price=price, user_id=user), post.to_dict(), 201
     if field=='size':
-        return post.update(size=size, user_id=user)
+        return post.update(size=size, user_id=user), post.to_dict(), 201
     if field=='image':
-        return post.update(img=img, user_id=user)
-    return post.to_dict(), 201
-
+        return post.update(img=img, user_id=user), post.to_dict(), 201
+  
 
 @api.route('/post/delete/<int:post_id>', methods=['POST'])
 def deletepost(post_id):
