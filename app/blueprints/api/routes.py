@@ -244,18 +244,18 @@ def deletepost(post_id):
     return post.to_dict(), 201
 
 @api.route('/cart', methods=['GET'])
-def getposts():
+def getitems():
     chart = Chart.query.all()
     return jsonify([c.to_dict() for c in chart])
 
 @api.route('/chart<int:chart_id>', methods=['GET'])
-def getitems(chart_id):
+def getitem(chart_id):
     chart = Chart.query.get(chart_id)
     return chart.to_dict()
 
 @api.route('/chart/delete/<int:chart_id>', methods=['POST'])
 @token_auth.login_required
-def empty_chart(chart_id):
+def delete_item(chart_id):
     chart = Chart.query.get(chart_id)
     if not request.is_json:
         return("your request content-type is not JSON"), 400
