@@ -171,6 +171,11 @@ class Chart(db.Model):
         db.session.delete(self)
         db.session.commit()
         
+    def delete_all(self, **kwargs):
+        super().__init__(**kwargs)
+        db.session.delete(self)   
+        db.session.commit()
+           
     def to_dict(self):
         return{
             "id":self.id,

@@ -232,7 +232,7 @@ def delete_item(chart_id):
 @api.route('/chart/empty', methods=['POST'])
 def empty_chart():
     chart = Chart.query.all()
-    chart.delete()
+    chart.delete_all()
     return chart.to_dict(), 201
 
 @api.route('/chart/create', methods=['POST'])
