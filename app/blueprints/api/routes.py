@@ -95,6 +95,7 @@ def index_():
     return {'token':token, 'token_expiration':user.token_expiration}
 
 @api.route('/users')
+@token_auth.login_required
 def get_user():
     user = token_auth.current_user()
     id = user.get_user_id()
@@ -231,12 +232,6 @@ def delete_item(chart_id):
 @api.route('/chart/empty', methods=['POST'])
 def empty_chart():
     chart = Chart.query.all()
-    if not request.is_json:
-        return("your request content-type is not JSON"), 400
-    data=request.json
-    for field in ['brand', 'name', 'size', 'price']:
-        if field not in data:
-            return("error:f{field} must be in request body"), 400
     chart.delete()
     return chart.to_dict(), 201
 
