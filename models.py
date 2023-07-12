@@ -47,8 +47,7 @@ class User(db.Model, UserMixin):
             username = {'username'}
             email = {'email'}
             password ={'password'}
-            avatar={"avatar"}
-            if key in username or email or password or avatar:
+            if key in username or email or password:
                 setattr(self, key, value)
         # Save the updates to the database
         db.session.commit()
@@ -64,7 +63,6 @@ class User(db.Model, UserMixin):
             "username": self.username,
             "password": self.password,
             "date_created": self.date_created,
-            "avatar": self.avatar,
             "post": [p.to_dict() for p in self.posts.all()],
             "chart": [c.to_dict() for c in self.chart.all()]
         }
