@@ -98,7 +98,7 @@ def index_():
 @token_auth.login_required
 def get_user():
     user = token_auth.current_user()
-    return jsonify(user)
+    return jsonify(user.to_dict())
 
 @api.route('/users', methods=['POST'])
 def createuser():
