@@ -46,7 +46,8 @@ class User(db.Model, UserMixin):
         for key, value in kwargs.items():
             username = {'username'}
             email = {'email'}
-            password ={'password'}
+            password =generate_password_hash({'password'})
+            
             if key in username or email or password:
                 setattr(self, key, value)
         # Save the updates to the database
